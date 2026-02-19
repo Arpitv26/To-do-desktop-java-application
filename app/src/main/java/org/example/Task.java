@@ -1,8 +1,11 @@
 package org.example;
 
 public class Task {
-    private final String text;
+    private String text;
     private boolean completed;
+
+    public Task() {
+    }
 
     public Task(String text) {
         this.text = text;
@@ -15,6 +18,10 @@ public class Task {
 
     public boolean isCompleted() {
         return completed;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public void setCompleted(boolean completed) {

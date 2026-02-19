@@ -1,5 +1,7 @@
 package org.example;
 
+import java.nio.file.Path;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,14 +20,17 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+    private static final Path STORAGE_PATH = Path.of(System.getProperty("user.home"), ".todo-desktop-java", "tasks.json");
+
     @Override
     public void start(Stage stage) {
         BorderPane root = new BorderPane();
+        TaskRepository taskRepository = new TaskRepository(STORAGE_PATH);
 
         Label title = new Label("To-do Application");
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: 700;");
 
-        ObservableList<Task> tasks = FXCollections.observableArrayList();
+        ObservableList<Task> tasks = FXCollections.observableArrayList(taskRepository.loadTasks());
         ListView<Task> listView = new ListView<>(tasks);
         listView.setPlaceholder(new Label("No tasks yet. Add your first task."));
         listView.setCellFactory(lv -> new ListCell<>() {
@@ -54,9 +59,13 @@ public class Main extends Application {
                 completedCheckBox.setOnAction(event -> {
                     task.setCompleted(completedCheckBox.isSelected());
                     applyCompletedStyle(taskText, task.isCompleted());
+                    taskRepository.saveTasks(tasks);
                 });
 
-                deleteButton.setOnAction(event -> getListView().getItems().remove(task));
+                deleteButton.setOnAction(event -> {
+                    getListView().getItems().remove(task);
+                    taskRepository.saveTasks(tasks);
+                });
                 setGraphic(row);
             }
         });
@@ -72,8 +81,8 @@ public class Main extends Application {
         input.setPromptText("Add a task...");
         root.setPadding(new Insets(16));
 
-        addBtn.setOnAction(event -> addTaskFromInput(input, tasks));
-        input.setOnAction(event -> addTaskFromInput(input, tasks));
+        addBtn.setOnAction(event -> addTaskFromInput(input, tasks, taskRepository));
+        input.setOnAction(event -> addTaskFromInput(input, tasks, taskRepository));
 
         root.setTop(title);
         root.setCenter(listView);
@@ -85,13 +94,14 @@ public class Main extends Application {
         stage.show();
     }
 
-    private void addTaskFromInput(TextField input, ObservableList<Task> tasks) {
+    private void addTaskFromInput(TextField input, ObservableList<Task> tasks, TaskRepository taskRepository) {
         String text = input.getText() == null ? "" : input.getText().trim();
         if (text.isEmpty()) {
             return;
         }
 
         tasks.add(new Task(text));
+        taskRepository.saveTasks(tasks);
         input.clear();
     }
 
