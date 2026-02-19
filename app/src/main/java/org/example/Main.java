@@ -7,7 +7,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -26,6 +28,38 @@ public class Main extends Application {
         ObservableList<Task> tasks = FXCollections.observableArrayList();
         ListView<Task> listView = new ListView<>(tasks);
         listView.setPlaceholder(new Label("No tasks yet. Add your first task."));
+        listView.setCellFactory(lv -> new ListCell<>() {
+            private final CheckBox completedCheckBox = new CheckBox();
+            private final Label taskText = new Label();
+            private final Button deleteButton = new Button("Delete");
+            private final HBox row = new HBox(10, completedCheckBox, taskText, deleteButton);
+
+            {
+                HBox.setHgrow(taskText, Priority.ALWAYS);
+                row.setAlignment(Pos.CENTER_LEFT);
+            }
+
+            @Override
+            protected void updateItem(Task task, boolean empty) {
+                super.updateItem(task, empty);
+                if (empty || task == null) {
+                    setGraphic(null);
+                    return;
+                }
+
+                taskText.setText(task.getText());
+                applyCompletedStyle(taskText, task.isCompleted());
+                completedCheckBox.setSelected(task.isCompleted());
+
+                completedCheckBox.setOnAction(event -> {
+                    task.setCompleted(completedCheckBox.isSelected());
+                    applyCompletedStyle(taskText, task.isCompleted());
+                });
+
+                deleteButton.setOnAction(event -> getListView().getItems().remove(task));
+                setGraphic(row);
+            }
+        });
 
         TextField input = new TextField();
         Button addBtn = new Button("Add");
@@ -59,6 +93,14 @@ public class Main extends Application {
 
         tasks.add(new Task(text));
         input.clear();
+    }
+
+    private void applyCompletedStyle(Label taskLabel, boolean completed) {
+        if (completed) {
+            taskLabel.setStyle("-fx-strikethrough: true; -fx-text-fill: #6b7280;");
+            return;
+        }
+        taskLabel.setStyle("");
     }
 
     public static void main(String[] args) {
