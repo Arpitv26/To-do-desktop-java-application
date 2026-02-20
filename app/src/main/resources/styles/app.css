@@ -1,0 +1,265 @@
+@font-face {
+  font-family: "Space Grotesk";
+  src: local("Space Grotesk");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: local("Space Grotesk Medium");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: local("Space Grotesk Bold");
+  font-weight: 700;
+}
+
+.root {
+  -fx-font-family: "Space Grotesk", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  -fx-background-color: #0b0a10;
+  -fx-font-size: 14px;
+}
+
+.app-container {
+  -fx-background-color: transparent;
+  -fx-padding: 0 8px;
+}
+
+.header {
+  -fx-padding: 0 0 4 0;
+}
+
+.header-top {
+  -fx-spacing: 16px;
+}
+
+.title-box {
+  -fx-alignment: center-left;
+}
+
+.app-title {
+  -fx-font-size: 36px;
+  -fx-font-weight: 700;
+  -fx-text-fill: #b994ff;
+}
+
+.app-icon {
+  -fx-min-width: 40px;
+  -fx-min-height: 40px;
+}
+
+.app-icon-circle {
+  -fx-fill: rgba(185, 148, 255, 0.2);
+  -fx-stroke: #b994ff;
+  -fx-stroke-width: 2;
+}
+
+.app-icon-check {
+  -fx-text-fill: #b994ff;
+  -fx-font-size: 18px;
+  -fx-font-weight: 700;
+}
+
+.progress-label {
+  -fx-text-fill: #a7a0bd;
+  -fx-font-size: 13px;
+}
+
+.secondary-button {
+  -fx-background-color: #14111d;
+  -fx-text-fill: #cdb8ff;
+  -fx-background-radius: 14px;
+  -fx-padding: 10px 18px;
+  -fx-border-color: #2a223a;
+  -fx-border-radius: 14px;
+  -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+  -fx-background-color: #1b1626;
+  -fx-border-color: #8a6bff;
+  -fx-effect: dropshadow(gaussian, rgba(138, 107, 255, 0.25), 12, 0, 0, 0);
+  -fx-scale-x: 1.02;
+  -fx-scale-y: 1.02;
+}
+
+.secondary-button:disabled {
+  -fx-opacity: 0.45;
+  -fx-cursor: default;
+}
+
+.todo-list {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-padding: 2px 18px 2px 18px;
+}
+
+.todo-list .list-cell {
+  -fx-background-color: transparent;
+  -fx-padding: 0 6px 12 6px;
+}
+
+.todo-list .virtual-flow .clipped-container {
+  -fx-padding: 0 12px 0 12px;
+}
+
+.todo-row {
+  -fx-background-color: #14111d;
+  -fx-background-radius: 16px;
+  -fx-border-radius: 16px;
+  -fx-border-color: #2a223a;
+  -fx-padding: 12px 16px;
+  -fx-spacing: 12px;
+}
+
+.todo-row:hover {
+  -fx-border-color: #8a6bff;
+  -fx-effect: dropshadow(gaussian, rgba(138, 107, 255, 0.2), 12, 0, 0, 0);
+}
+
+
+.todo-check .box {
+  -fx-background-color: transparent;
+  -fx-border-color: #2a223a;
+  -fx-border-radius: 6px;
+  -fx-background-radius: 6px;
+}
+
+.todo-check:selected .box {
+  -fx-background-color: #8a6bff;
+  -fx-border-color: #8a6bff;
+}
+
+.todo-check:selected .mark {
+  -fx-background-color: #0b0a10;
+}
+
+.task-label {
+  -fx-text-fill: #e6dcff;
+  -fx-font-size: 15px;
+}
+
+.task-label.completed {
+  -fx-text-fill: #6f6884;
+  -fx-strikethrough: true;
+}
+
+.delete-button {
+  -fx-background-color: transparent;
+  -fx-text-fill: #c58bff;
+  -fx-background-radius: 10px;
+  -fx-padding: 6px 10px;
+  -fx-cursor: hand;
+}
+
+.delete-button:hover {
+  -fx-background-color: #1b1626;
+  -fx-effect: dropshadow(gaussian, rgba(138, 107, 255, 0.25), 10, 0, 0, 0);
+}
+
+.input-row {
+  -fx-spacing: 10px;
+  -fx-alignment: center;
+  -fx-padding: 0 24px;
+}
+
+.task-input {
+  -fx-background-color: #14111d;
+  -fx-text-fill: #e6dcff;
+  -fx-prompt-text-fill: #8b84a4;
+  -fx-background-radius: 16px;
+  -fx-border-radius: 16px;
+  -fx-border-color: #2a223a;
+  -fx-padding: 10px 14px;
+  -fx-max-width: infinity;
+}
+
+.task-input:focused {
+  -fx-border-color: #8a6bff;
+  -fx-effect: dropshadow(gaussian, rgba(138, 107, 255, 0.25), 12, 0, 0, 0);
+}
+
+.primary-button {
+  -fx-background-color: #8a6bff;
+  -fx-text-fill: #0b0a10;
+  -fx-background-radius: 16px;
+  -fx-padding: 10px 16px;
+  -fx-font-weight: 600;
+  -fx-cursor: hand;
+  -fx-min-width: 64px;
+}
+
+.primary-button:hover {
+  -fx-background-color: #9a7aff;
+  -fx-effect: dropshadow(gaussian, rgba(138, 107, 255, 0.35), 14, 0, 0, 0);
+  -fx-scale-x: 1.03;
+  -fx-scale-y: 1.03;
+}
+
+.footer {
+  -fx-padding: 8px 0 0 0;
+}
+
+.footer-label {
+  -fx-text-fill: #a7a0bd;
+  -fx-font-size: 12px;
+}
+
+.status-dot {
+  -fx-min-width: 8px;
+  -fx-min-height: 8px;
+  -fx-max-width: 8px;
+  -fx-max-height: 8px;
+  -fx-background-radius: 999px;
+}
+
+.active-dot {
+  -fx-background-color: #c7b2ff;
+}
+
+.completed-dot {
+  -fx-background-color: #8a6bff;
+}
+
+.empty-placeholder {
+  -fx-text-fill: #a7a0bd;
+  -fx-font-size: 14px;
+  -fx-padding: 20px;
+}
+
+.scroll-bar:vertical {
+  -fx-pref-width: 8px;
+  -fx-background-color: transparent;
+}
+
+.scroll-bar:horizontal {
+  -fx-pref-height: 8px;
+  -fx-background-color: transparent;
+}
+
+.scroll-bar .track {
+  -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+  -fx-background-color: rgba(138, 107, 255, 0.55);
+  -fx-background-radius: 999px;
+}
+
+.scroll-bar .thumb:hover {
+  -fx-background-color: rgba(138, 107, 255, 0.75);
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+  -fx-padding: 0;
+  -fx-background-color: transparent;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+  -fx-shape: "";
+  -fx-padding: 0;
+}
