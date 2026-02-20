@@ -26,6 +26,7 @@ public class Main extends Application {
     public void start(Stage stage) {
         BorderPane root = new BorderPane();
         TaskRepository taskRepository = new TaskRepository(STORAGE_PATH);
+        TaskService taskService = new TaskService();
 
         Label title = new Label("To-do Application");
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: 700;");
@@ -57,13 +58,13 @@ public class Main extends Application {
                 completedCheckBox.setSelected(task.isCompleted());
 
                 completedCheckBox.setOnAction(event -> {
-                    task.setCompleted(completedCheckBox.isSelected());
+                    taskService.setCompleted(task, completedCheckBox.isSelected());
                     applyCompletedStyle(taskText, task.isCompleted());
                     taskRepository.saveTasks(tasks);
                 });
 
                 deleteButton.setOnAction(event -> {
-                    getListView().getItems().remove(task);
+                    taskService.deleteTask(tasks, task);
                     taskRepository.saveTasks(tasks);
                 });
                 setGraphic(row);
@@ -81,8 +82,8 @@ public class Main extends Application {
         input.setPromptText("Add a task...");
         root.setPadding(new Insets(16));
 
-        addBtn.setOnAction(event -> addTaskFromInput(input, tasks, taskRepository));
-        input.setOnAction(event -> addTaskFromInput(input, tasks, taskRepository));
+        addBtn.setOnAction(event -> addTaskFromInput(input, tasks, taskService, taskRepository));
+        input.setOnAction(event -> addTaskFromInput(input, tasks, taskService, taskRepository));
 
         root.setTop(title);
         root.setCenter(listView);
@@ -94,13 +95,15 @@ public class Main extends Application {
         stage.show();
     }
 
-    private void addTaskFromInput(TextField input, ObservableList<Task> tasks, TaskRepository taskRepository) {
-        String text = input.getText() == null ? "" : input.getText().trim();
-        if (text.isEmpty()) {
+    private void addTaskFromInput(
+            TextField input,
+            ObservableList<Task> tasks,
+            TaskService taskService,
+            TaskRepository taskRepository) {
+        if (!taskService.addTask(tasks, input.getText())) {
             return;
         }
 
-        tasks.add(new Task(text));
         taskRepository.saveTasks(tasks);
         input.clear();
     }
