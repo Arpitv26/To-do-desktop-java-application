@@ -30,4 +30,11 @@ public class TaskService {
         }
         tasks.remove(task);
     }
+
+    public boolean clearCompleted(List<Task> tasks) {
+        if (tasks == null) {
+            return false;
+        }
+        return tasks.removeIf(Task::isCompleted);
+    }
 }

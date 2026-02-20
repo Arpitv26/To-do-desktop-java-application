@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 import javafx.application.Application;
@@ -8,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -27,11 +29,22 @@ public class Main extends Application {
         BorderPane root = new BorderPane();
         TaskRepository taskRepository = new TaskRepository(STORAGE_PATH);
         TaskService taskService = new TaskService();
+        ObservableList<Task> tasks = loadTasksWithFallback(taskRepository);
 
         Label title = new Label("To-do Application");
         title.setStyle("-fx-font-size: 20px; -fx-font-weight: 700;");
+        Button clearCompletedBtn = new Button("Clear Completed");
+        clearCompletedBtn.setOnAction(event -> {
+            if (!taskService.clearCompleted(tasks)) {
+                return;
+            }
+            saveTasksWithAlert(taskRepository, tasks);
+        });
 
-        ObservableList<Task> tasks = FXCollections.observableArrayList(taskRepository.loadTasks());
+        HBox header = new HBox(10, title, clearCompletedBtn);
+        HBox.setHgrow(title, Priority.ALWAYS);
+        header.setAlignment(Pos.CENTER_LEFT);
+
         ListView<Task> listView = new ListView<>(tasks);
         listView.setPlaceholder(new Label("No tasks yet. Add your first task."));
         listView.setCellFactory(lv -> new ListCell<>() {
@@ -60,12 +73,12 @@ public class Main extends Application {
                 completedCheckBox.setOnAction(event -> {
                     taskService.setCompleted(task, completedCheckBox.isSelected());
                     applyCompletedStyle(taskText, task.isCompleted());
-                    taskRepository.saveTasks(tasks);
+                    saveTasksWithAlert(taskRepository, tasks);
                 });
 
                 deleteButton.setOnAction(event -> {
                     taskService.deleteTask(tasks, task);
-                    taskRepository.saveTasks(tasks);
+                    saveTasksWithAlert(taskRepository, tasks);
                 });
                 setGraphic(row);
             }
@@ -85,7 +98,7 @@ public class Main extends Application {
         addBtn.setOnAction(event -> addTaskFromInput(input, tasks, taskService, taskRepository));
         input.setOnAction(event -> addTaskFromInput(input, tasks, taskService, taskRepository));
 
-        root.setTop(title);
+        root.setTop(header);
         root.setCenter(listView);
         root.setBottom(inputRow);
 
@@ -104,8 +117,33 @@ public class Main extends Application {
             return;
         }
 
-        taskRepository.saveTasks(tasks);
+        saveTasksWithAlert(taskRepository, tasks);
         input.clear();
+    }
+
+    private ObservableList<Task> loadTasksWithFallback(TaskRepository taskRepository) {
+        try {
+            return FXCollections.observableArrayList(taskRepository.loadTasks());
+        } catch (IOException e) {
+            showErrorAlert("Could not load saved tasks. Starting with an empty list.");
+            return FXCollections.observableArrayList();
+        }
+    }
+
+    private void saveTasksWithAlert(TaskRepository taskRepository, ObservableList<Task> tasks) {
+        try {
+            taskRepository.saveTasks(tasks);
+        } catch (IOException e) {
+            showErrorAlert("Could not save tasks to disk.");
+        }
+    }
+
+    private void showErrorAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Persistence Error");
+        alert.setHeaderText("Task storage failed");
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private void applyCompletedStyle(Label taskLabel, boolean completed) {

@@ -1,6 +1,7 @@
 package org.example;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ class TaskRepositoryTest {
     Path tempDir;
 
     @Test
-    void loadTasksReturnsEmptyWhenFileDoesNotExist() {
+    void loadTasksReturnsEmptyWhenFileDoesNotExist() throws IOException {
         TaskRepository repository = new TaskRepository(tempDir.resolve("tasks.json"));
 
         List<Task> tasks = repository.loadTasks();
@@ -24,7 +25,7 @@ class TaskRepositoryTest {
     }
 
     @Test
-    void saveAndLoadTasksRoundTrip() {
+    void saveAndLoadTasksRoundTrip() throws IOException {
         Path storage = tempDir.resolve("tasks.json");
         TaskRepository repository = new TaskRepository(storage);
         Task completedTask = new Task("Pay bills");
@@ -39,13 +40,10 @@ class TaskRepositoryTest {
     }
 
     @Test
-    void loadTasksReturnsEmptyOnInvalidJson() throws IOException {
+    void loadTasksThrowsOnInvalidJson() throws IOException {
         Path storage = tempDir.resolve("tasks.json");
         Files.writeString(storage, "{not-valid-json");
         TaskRepository repository = new TaskRepository(storage);
-
-        List<Task> tasks = repository.loadTasks();
-
-        assertTrue(tasks.isEmpty());
+        assertThrows(IOException.class, repository::loadTasks);
     }
 }

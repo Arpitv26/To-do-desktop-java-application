@@ -18,28 +18,18 @@ public class TaskRepository {
         this.storagePath = storagePath;
     }
 
-    public List<Task> loadTasks() {
+    public List<Task> loadTasks() throws IOException {
         if (Files.notExists(storagePath)) {
             return Collections.emptyList();
         }
-
-        try {
-            return OBJECT_MAPPER.readValue(storagePath.toFile(), TASK_LIST_TYPE);
-        } catch (IOException e) {
-            System.err.println("Failed to load tasks from disk: " + e.getMessage());
-            return Collections.emptyList();
-        }
+        return OBJECT_MAPPER.readValue(storagePath.toFile(), TASK_LIST_TYPE);
     }
 
-    public void saveTasks(List<Task> tasks) {
-        try {
-            Path parent = storagePath.getParent();
-            if (parent != null) {
-                Files.createDirectories(parent);
-            }
-            OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValue(storagePath.toFile(), tasks);
-        } catch (IOException e) {
-            System.err.println("Failed to save tasks to disk: " + e.getMessage());
+    public void saveTasks(List<Task> tasks) throws IOException {
+        Path parent = storagePath.getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
         }
+        OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValue(storagePath.toFile(), tasks);
     }
 }

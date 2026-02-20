@@ -57,4 +57,20 @@ class TaskServiceTest {
         assertEquals(1, tasks.size());
         assertEquals("Second", tasks.get(0).getText());
     }
+
+    @Test
+    void clearCompletedRemovesOnlyCompletedTasks() {
+        List<Task> tasks = new ArrayList<>();
+        Task pending = new Task("Pending");
+        Task completed = new Task("Completed");
+        completed.setCompleted(true);
+        tasks.add(pending);
+        tasks.add(completed);
+
+        boolean changed = taskService.clearCompleted(tasks);
+
+        assertTrue(changed);
+        assertEquals(1, tasks.size());
+        assertEquals("Pending", tasks.get(0).getText());
+    }
 }
